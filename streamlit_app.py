@@ -162,7 +162,7 @@ elif menu == 'Predict Selling Price':
 
     # Check if the loaded model and input data are correct
     st.subheader("Loaded Model:")
-    st.write(loaded_model)
+    st.write("Random Forest model loaded successfully.")
 
     st.subheader("Processed Input Data:")
     st.write(input_data)
