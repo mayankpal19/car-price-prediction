@@ -3,184 +3,322 @@ import pandas as pd
 import pickle
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from pathlib import Path
-import os
 
 # Get the current directory
 current_dir = Path(__file__).resolve().parent
 
-# # List the contents of the directory
-# directory_contents = os.listdir(current_dir)
+# Streamlit page configuration
+st.set_page_config(
+    page_title="Car Price Prediction & Analytics",
+    page_icon="🚗",
+    layout="wide"
+)
 
-# # Display the contents using st.write
-# st.write(f"Contents of Directory '{current_dir}':")
-# st.write(directory_contents)
-
-# Navigate back to the main project directory
-project_dir = current_dir.parent
-
-# Streamlit app
-# set page title
-st.set_page_config('Car Price Prediction App')
-
-# Hide Streamlit's GitHub icon
-
-# Hide Streamlit's GitHub icon
+# Hide Streamlit default menu/header/footer
 hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            header {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
+<style>
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
+</style>
+"""
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# Side Nav-bar window
-social_acc = ['About', 'Github', 'Kaggle', 'LinkedIn']
-social_acc_nav = st.sidebar.selectbox('About', social_acc)
-if social_acc_nav == 'About':
-    st.sidebar.markdown("<h2 style='text-align: center;'> Sumit S. Chaure</h2> ", unsafe_allow_html=True)
-    st.sidebar.markdown('''---''')
-    st.sidebar.markdown('''
-    • Data Analytics (Python/SQL/Power Bi/Excel)\n
-    • Data Science (Python,Machine Learning,Statistics)\n
-    • Interned as a Data Analyst @ Trainity\n
-    • Working Experience of 2.5 Years as a Software Engineer''')
-    st.sidebar.markdown("[Contact Me](mailto:sumitsc.work@gmail.com)")
-elif social_acc_nav == 'Kaggle':
-    st.sidebar.image('https://mitsus.life-is-pa.in/6ohYGkH40.png')
-    st.sidebar.markdown("[Kaggle](https://www.kaggle.com/mitsu00)")
-elif social_acc_nav == 'Github':
-    st.sidebar.image('https://mitsus.life-is-pa.in/6ohZdGxSM.png')
-    st.sidebar.markdown("[Github Profile](https://github.com/Sumit-SC)")
-elif social_acc_nav == 'LinkedIn':
-    st.sidebar.image('https://mitsus.life-is-pa.in/6ohYtyxiP.png')
-    st.sidebar.markdown("[Visit LinkedIn account](https://www.linkedin.com/in/sumitsc/)")
+# Sidebar
+st.sidebar.markdown(
+    "<h2 style='text-align: center;'>Car Price Prediction</h2>",
+    unsafe_allow_html=True
+)
+
+st.sidebar.markdown("---")
+
+st.sidebar.markdown("""
+### Machine Learning Project
+
+This application predicts the selling price of used cars using a
+**Random Forest Regression** model.
+
+### Technologies
+- Python
+- Pandas
+- Scikit-learn
+- Streamlit
+""")
 
 # Load the saved model
-model_filename = current_dir / "./models/Random Forest.pkl"
-loaded_model = pickle.load(open(model_filename, "rb"))
+model_filename = current_dir / "models" / "Random Forest.pkl"
 
-# import raw data & show
-raw_df = pd.read_csv(current_dir / './dataset/raw/CAR DETAILS.csv')
+with open(model_filename, "rb") as model_file:
+    loaded_model = pickle.load(model_file)
 
-# Load the cleaned data
-cleaned_data_filename = current_dir / "./dataset/processed/Processed CAR DETAILS.csv"
+# Load raw data
+raw_df = pd.read_csv(
+    current_dir / "dataset" / "raw" / "CAR DETAILS.csv"
+)
+
+# Load processed data
+cleaned_data_filename = (
+    current_dir / "dataset" / "processed" / "Processed CAR DETAILS.csv"
+)
+
 cleaned_data = pd.read_csv(cleaned_data_filename)
 
-category_col = ['Brand', 'Model', 'Variant', 'Fuel', 'Seller_Type', 'Transmission', 'Owner']
+# Categorical columns
+category_col = [
+    "Brand",
+    "Model",
+    "Variant",
+    "Fuel",
+    "Seller_Type",
+    "Transmission",
+    "Owner"
+]
 
-# Main Page Starting
+# Main navigation
+menu_list = [
+    "Raw-Data Display",
+    "Exploratory Data Analysis",
+    "Predict Selling Price"
+]
 
-# Menu Bar/Page selection
-menu_list = ['Raw-Data Display', 'Exploratory Data Analysis', "Predict Selling Price"]
 menu = st.radio("Menu", menu_list)
 
-# Raw-Data Display
-if menu == 'Raw-Data Display':
-    st.title('Used Car Models Raw-Dataset')
-    if st.checkbox("View Raw Car dataset"):
-        st.write(raw_df)
+# ---------------------------------------------------------
+# RAW DATA
+# ---------------------------------------------------------
 
-# EDA Part(Will Add Later)
-if menu == 'Exploratory Data Analysis':
-    st.title('Exploratory Data Analysis of Used Car Models ')
-    st.write("EDA Code to view & Explore the Graphs & inisghts :")
-    st.write("[EDA](https://github.com/Sumit-SC/Data-Science-Capstone-Project/blob/main/notebooks/Used_Cars_DA(Graphical%26Cleaning).ipynb) ,")
-    st.write("[Colab](https://colab.research.google.com/drive/1ObKA8DxCUC5S_2riq31XJoZrfxLq8bbn#scrollTo=yt1XakQBL8tD)")
-    if st.checkbox("View Cleaned/Processed data"):
-        st.write(cleaned_data)
+if menu == "Raw-Data Display":
 
-# Price Prediction
-elif menu == 'Predict Selling Price':
-    # Display the columns in the web app
-    st.title("Car Selling Price Prediction App")
+    st.title("🚗 Used Car Dataset")
 
-    # Display a dropdown to toggle between loaded CSV data and encoded data
-    display_option = st.radio("Select Display Option:", ["No Data", "Loaded CSV Data", "Encoded Data"])
+    st.write(
+        "Explore the original used-car dataset used for this project."
+    )
 
-    # function for encoding loaded dataset
+    if st.checkbox("View Raw Car Dataset"):
+        st.dataframe(raw_df, use_container_width=True)
+
+
+# ---------------------------------------------------------
+# EXPLORATORY DATA ANALYSIS
+# ---------------------------------------------------------
+
+elif menu == "Exploratory Data Analysis":
+
+    st.title("📊 Exploratory Data Analysis")
+
+    st.write(
+        "Explore the processed dataset used for machine learning."
+    )
+
+    if st.checkbox("View Processed Dataset"):
+        st.dataframe(cleaned_data, use_container_width=True)
+
+    st.subheader("Dataset Overview")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Total Cars",
+            f"{len(cleaned_data):,}"
+        )
+
+    with col2:
+        st.metric(
+            "Features",
+            len(cleaned_data.columns)
+        )
+
+    with col3:
+        st.metric(
+            "Average Selling Price",
+            f"₹{cleaned_data['Selling_Price'].mean():,.0f}"
+        )
+
+
+# ---------------------------------------------------------
+# PRICE PREDICTION
+# ---------------------------------------------------------
+
+elif menu == "Predict Selling Price":
+
+    st.title("🚘 Car Selling Price Prediction")
+
+    st.write(
+        "Enter the details of a used car to estimate its selling price."
+    )
+
+    # Function for encoding categorical data
     def preprocess_data(df, label_encoders):
+
         for feature in df.columns:
+
             if feature in label_encoders:
-                df[feature] = label_encoders[feature].transform(df[feature])
+                df[feature] = label_encoders[feature].transform(
+                    df[feature]
+                )
+
         return df
 
-    # Load the LabelEncoders used during training
+    # Create label encoders
     label_encoders = {}
+
     for feature in category_col:
+
         label_encoder = LabelEncoder()
+
         label_encoder.fit(cleaned_data[feature])
+
         label_encoders[feature] = label_encoder
 
-    # Display loaded CSV data
-    # st.subheader("Loaded CSV Data:")
-    # st.write(cleaned_data)
+    # Display option
+    display_option = st.radio(
+        "Select Data Display:",
+        ["No Data", "Loaded CSV Data", "Encoded Data"]
+    )
 
-    # Display encoded data
-    # st.subheader("Encoded Data:")
-    encoded_data = preprocess_data(cleaned_data.copy(), label_encoders)
-    # st.write(encoded_data)
+    # Encode dataset
+    encoded_data = preprocess_data(
+        cleaned_data.copy(),
+        label_encoders
+    )
 
-    # Display the selected data
-    if display_option == "No Data":
-        st.subheader("Not displaying either the Loaded CSV File nor the Encoded Data")
-    elif display_option == "Loaded CSV Data":
-        st.subheader("Loaded CSV Data:")
-        st.write(cleaned_data)
+    # Display selected data
+    if display_option == "Loaded CSV Data":
+
+        st.subheader("Loaded Dataset")
+
+        st.dataframe(
+            cleaned_data,
+            use_container_width=True
+        )
+
     elif display_option == "Encoded Data":
-        st.subheader("Encoded Data:")
-        st.write(encoded_data)
 
-    # Display sliders for numerical features
-    km_driven = st.slider("Select KM Driven:", min_value=cleaned_data["Km_Driven"].min(),
-                          max_value=cleaned_data["Km_Driven"].max())
-    year = st.slider("Select Year:", min_value=cleaned_data["Year"].min(), max_value=cleaned_data["Year"].max())
+        st.subheader("Encoded Dataset")
 
-    # Display dropdowns for categorical features
-    selected_brand = st.selectbox("Select Brand:", cleaned_data["Brand"].unique())
-    brand_filtered_df = cleaned_data[cleaned_data['Brand'] == selected_brand]
-    selected_model = st.selectbox("Select Model:", brand_filtered_df["Model"].unique())
-    model_filtered_df = brand_filtered_df[brand_filtered_df['Model'] == selected_model]
-    selected_variant = st.selectbox("Select Variant:", model_filtered_df["Variant"].unique())
-    selected_fuel = st.selectbox("Select Fuel:", cleaned_data["Fuel"].unique())
-    selected_seller_type = st.selectbox("Select Seller Type:", cleaned_data["Seller_Type"].unique())
-    selected_transmission = st.selectbox("Select Transmission:", cleaned_data["Transmission"].unique())
-    selected_owner = st.selectbox("Select Owner:", cleaned_data["Owner"].unique())
+        st.dataframe(
+            encoded_data,
+            use_container_width=True
+        )
 
-    # Create a DataFrame from the user inputs
+    # User input
+    st.subheader("Enter Car Details")
+
+    km_driven = st.slider(
+        "Kilometers Driven:",
+        min_value=int(cleaned_data["Km_Driven"].min()),
+        max_value=int(cleaned_data["Km_Driven"].max()),
+        value=int(cleaned_data["Km_Driven"].median())
+    )
+
+    year = st.slider(
+        "Manufacturing Year:",
+        min_value=int(cleaned_data["Year"].min()),
+        max_value=int(cleaned_data["Year"].max()),
+        value=int(cleaned_data["Year"].median())
+    )
+
+    selected_brand = st.selectbox(
+        "Brand:",
+        cleaned_data["Brand"].unique()
+    )
+
+    brand_filtered_df = cleaned_data[
+        cleaned_data["Brand"] == selected_brand
+    ]
+
+    selected_model = st.selectbox(
+        "Model:",
+        brand_filtered_df["Model"].unique()
+    )
+
+    model_filtered_df = brand_filtered_df[
+        brand_filtered_df["Model"] == selected_model
+    ]
+
+    selected_variant = st.selectbox(
+        "Variant:",
+        model_filtered_df["Variant"].unique()
+    )
+
+    selected_fuel = st.selectbox(
+        "Fuel:",
+        cleaned_data["Fuel"].unique()
+    )
+
+    selected_seller_type = st.selectbox(
+        "Seller Type:",
+        cleaned_data["Seller_Type"].unique()
+    )
+
+    selected_transmission = st.selectbox(
+        "Transmission:",
+        cleaned_data["Transmission"].unique()
+    )
+
+    selected_owner = st.selectbox(
+        "Owner:",
+        cleaned_data["Owner"].unique()
+    )
+
+    # Create input DataFrame
     input_data = pd.DataFrame({
-        'Brand': [selected_brand],
-        'Model': [selected_model],
-        'Variant': [selected_variant],
-        'Year': [year],
-        'Km_Driven': [km_driven],
-        'Fuel': [selected_fuel],
-        'Seller_Type': [selected_seller_type],
-        'Transmission': [selected_transmission],
-        'Owner': [selected_owner]
+
+        "Brand": [selected_brand],
+
+        "Model": [selected_model],
+
+        "Variant": [selected_variant],
+
+        "Year": [year],
+
+        "Km_Driven": [km_driven],
+
+        "Fuel": [selected_fuel],
+
+        "Seller_Type": [selected_seller_type],
+
+        "Transmission": [selected_transmission],
+
+        "Owner": [selected_owner]
     })
 
-    # Check if the loaded model and input data are correct
-    st.subheader("Loaded Model:")
-    st.write("Random Forest model loaded successfully.")
+    # Encode input
+    input_data_encoded = preprocess_data(
+        input_data.copy(),
+        label_encoders
+    )
 
-    st.subheader("Processed Input Data:")
-    st.write(input_data)
-
-    # Preprocess the user input data using the same label encoders
-    input_data_encoded = preprocess_data(input_data.copy(), label_encoders)
-
-    st.subheader("Processed Input Data:(After Encoding)")
-    st.write(input_data_encoded)
-
-    # Standardize numerical features using scikit-learn's StandardScaler
+    # Standardize numerical columns
     scaler = StandardScaler()
-    numerical_cols = ['Year', 'Km_Driven']
-    input_data_encoded[numerical_cols] = scaler.fit_transform(input_data_encoded[numerical_cols])
 
-    # Make prediction using the loaded model
-    if st.button("Predict Selling Price"):
-        # Make predictions
-        predicted_price = loaded_model.predict(input_data_encoded)
-        st.subheader("Predicted Selling Price:")
-        st.write(f"The predicted selling price is: **_{predicted_price[0]:,.2f}_**")
+    numerical_cols = [
+        "Year",
+        "Km_Driven"
+    ]
+
+    input_data_encoded[numerical_cols] = scaler.fit_transform(
+        input_data_encoded[numerical_cols]
+    )
+
+    # Prediction
+    if st.button(
+        "💰 Predict Selling Price",
+        type="primary"
+    ):
+
+        predicted_price = loaded_model.predict(
+            input_data_encoded
+        )
+
+        st.success(
+            f"Estimated Selling Price: ₹{predicted_price[0]:,.2f}"
+        )
+
+        st.info(
+            "This prediction is an estimate generated by the "
+            "machine learning model and may differ from actual "
+            "market prices."
+        )
