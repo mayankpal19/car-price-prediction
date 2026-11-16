@@ -36,23 +36,21 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 social_acc = ['About', 'Github', 'Kaggle', 'LinkedIn']
 social_acc_nav = st.sidebar.selectbox('About', social_acc)
 if social_acc_nav == 'About':
-    st.sidebar.markdown("<h2 style='text-align: center;'> Sumit S. Chaure</h2> ", unsafe_allow_html=True)
+    st.sidebar.markdown("<h2 style='text-align: center;'> Mayank Pal</h2> ", unsafe_allow_html=True)
     st.sidebar.markdown('''---''')
     st.sidebar.markdown('''
     • Data Analytics (Python/SQL/Power Bi/Excel)\n
     • Data Science (Python,Machine Learning,Statistics)\n
     • Interned as a Data Analyst @ Trainity\n
     • Working Experience of 2.5 Years as a Software Engineer''')
-    st.sidebar.markdown("[Contact Me](mailto:sumitsc.work@gmail.com)")
+    st.sidebar.markdown("[Contact Me](mailto:mayankarunp@gmail.com)")
 elif social_acc_nav == 'Kaggle':
     st.sidebar.image('https://mitsus-.life-is-pa.in/7s65GCpDu.png')
     st.sidebar.markdown("[Kaggle](https://www.kaggle.com/mitsu00)")
 elif social_acc_nav == 'Github':
     st.sidebar.image('https://mitsus-.life-is-pa.in/7s66cDoBZ.png')
-    st.sidebar.markdown("[Github Profile](https://github.com/Sumit-SC)")
-elif social_acc_nav == 'LinkedIn':
-    st.sidebar.image('https://mitsus-.life-is-pa.in/7s65TFl9W.png')
-    st.sidebar.markdown("[Visit LinkedIn account](https://www.linkedin.com/in/sumitsc/)")
+    st.sidebar.markdown("[Github Profile](https://github.com/mayankpal19)")
+
 
 # Load the saved model
 model_filename = project_dir / "models/Random Forest.pkl"
