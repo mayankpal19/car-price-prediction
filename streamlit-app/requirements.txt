@@ -1,3 +1,4 @@
 pandas
 scikit_learn
 streamlit
+st-social-media-links
