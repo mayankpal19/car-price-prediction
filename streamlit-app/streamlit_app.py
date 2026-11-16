@@ -38,11 +38,7 @@ social_acc_nav = st.sidebar.selectbox('About', social_acc)
 if social_acc_nav == 'About':
     st.sidebar.markdown("<h2 style='text-align: center;'> Mayank Pal</h2> ", unsafe_allow_html=True)
     st.sidebar.markdown('''---''')
-    st.sidebar.markdown('''
-    • Data Analytics (Python/SQL/Power Bi/Excel)\n
-    • Data Science (Python,Machine Learning,Statistics)\n
-    • Interned as a Data Analyst @ Trainity\n
-    • Working Experience of 2.5 Years as a Software Engineer''')
+
     st.sidebar.markdown("[Contact Me](mailto:mayankarunp@gmail.com)")
 elif social_acc_nav == 'Kaggle':
     st.sidebar.image('https://mitsus-.life-is-pa.in/7s65GCpDu.png')
